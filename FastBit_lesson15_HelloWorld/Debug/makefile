@@ -61,7 +61,7 @@ main-build: FastBit_lesson15_HelloWorld.elf secondary-outputs
 
 # Tool invocations
 FastBit_lesson15_HelloWorld.elf FastBit_lesson15_HelloWorld.map: $(OBJS) $(USER_OBJS) C:\dev\courses\CorsoARM_FastBit\FastBit-baremetalembeddedcourse\FastBit_lesson15_HelloWorld\STM32F401RETX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-gcc -o "FastBit_lesson15_HelloWorld.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"C:\dev\courses\CorsoARM_FastBit\FastBit-baremetalembeddedcourse\FastBit_lesson15_HelloWorld\STM32F401RETX_FLASH.ld" --specs=nosys.specs -Wl,-Map="FastBit_lesson15_HelloWorld.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+	arm-none-eabi-gcc -o "FastBit_lesson15_HelloWorld.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"C:\dev\courses\CorsoARM_FastBit\FastBit-baremetalembeddedcourse\FastBit_lesson15_HelloWorld\STM32F401RETX_FLASH.ld" --specs=nosys.specs -Wl,-Map="FastBit_lesson15_HelloWorld.map" -Wl,--gc-sections -Wl,--verbose -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 
