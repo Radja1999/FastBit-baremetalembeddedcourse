@@ -49,13 +49,25 @@
 
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
+void generate_interrupt(void);
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+void generate_interrupt()
+{
+    uint32_t *pSTIR  = (uint32_t*)0xE000EF00;
+    uint32_t *pISER0 = (uint32_t*)0xE000E100;
 
+    //enable IRQ3 interrupt
+    *pISER0 |= ( 1 << 3);
+
+    //generate an interrupt from software for IRQ3
+    *pSTIR = (3 & 0x1FF);
+
+}
 /* USER CODE END 0 */
 
 /**
@@ -94,7 +106,9 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-  printf("Hello World!\n");
+  printf("Before interrupt\n");
+  generate_interrupt();
+  printf("After interrupt\n");
   while (1)
   {
     /* USER CODE END WHILE */
@@ -151,7 +165,11 @@ void SystemClock_Config(void)
 }
 
 /* USER CODE BEGIN 4 */
-
+/* This function(ISR) executes in HANDLER MODE of the processor */
+void RTC_WKUP_IRQHandler(void)
+{
+    printf("In handler mode : ISR\n");
+}
 /* USER CODE END 4 */
 
 /**
