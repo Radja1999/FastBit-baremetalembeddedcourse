@@ -100,6 +100,17 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
+#if 0
+      __asm volatile("LDR R1, =#0x20001000");
+      __asm volatile("LDR R2, =#0x20001004");
+      __asm volatile("LDR R0,[R1]");
+      __asm volatile("LDR R1,[R2]");
+      __asm volatile("ADD R0,R0, R1");
+      __asm volatile("STR R0,[R2]");
+#endif
+      uint32_t control_reg;
+
+      __asm volatile("MRS %0, CONTROL":"=r"(control_reg)::);
   }
   /* USER CODE END 3 */
 }
