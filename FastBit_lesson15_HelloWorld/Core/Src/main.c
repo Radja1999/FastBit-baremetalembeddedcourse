@@ -100,7 +100,7 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-#if 0
+#if 1
       __asm volatile("LDR R1, =#0x20001000");
       __asm volatile("LDR R2, =#0x20001004");
       __asm volatile("LDR R0,[R1]");
