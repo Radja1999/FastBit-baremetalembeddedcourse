@@ -33,7 +33,8 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-
+#define ALIAS_BASE 0x22000000
+#define BITBAND_BASE 0x20000000
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -89,6 +90,20 @@ int main(void)
   MX_GPIO_Init();
   MX_USART2_UART_Init();
   /* USER CODE BEGIN 2 */
+  uint8_t *ptr = (uint8_t*)0x20000200;
+  *ptr = 0xFF;
+
+  // normal method
+  //clearing 7th bit position
+  *ptr &= ~(1 << 7U);
+
+      //reset ptr to 0xFF
+  *ptr = 0xFF;
+  // bit band method
+  uint8_t* alias_addr = (uint8_t*) (ALIAS_BASE + (32 * (0x20000200 - BITBAND_BASE)) + 7U * 4U);
+  // clearing 7th bit of address 0x20000200
+  *alias_addr = 0;
+
 
   /* USER CODE END 2 */
 
