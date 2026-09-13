@@ -49,12 +49,17 @@
 
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
+int fun_add(int a, int b , int c , int d);
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+int fun_add(int a, int b , int c , int d)
+{
+    return (a+b+c+d);
+}
 
 /* USER CODE END 0 */
 
@@ -66,6 +71,7 @@ int main(void)
 {
 
   /* USER CODE BEGIN 1 */
+  int ret = 0;
 
   /* USER CODE END 1 */
 
@@ -95,7 +101,12 @@ int main(void)
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   printf("Hello World!\n");
-  while (1)
+
+  ret = fun_add(1, 4, 5, 6);
+
+  printf("result = %d\n",ret);
+
+  for (;;)
   {
     /* USER CODE END WHILE */
 
