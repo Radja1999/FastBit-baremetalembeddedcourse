@@ -33,7 +33,13 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-
+#define SRAM_START  0x20000000U
+#define SRAM_SIZE   (96 * 1024)
+#define SRAM_END    ( (SRAM_START) + (SAMR_SIZE) )
+#define STACK_START SRAM_END
+#define STACK_MSP_START STACK_START
+#define STACK_MSP_END   ((STACK_MSP_START + 512))
+#define STACK_PSP_START STACK_MSP_END
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -56,11 +62,26 @@ int fun_add(int a, int b , int c , int d);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+__attribute__((naked)) void change_sp_to_psp(void)
+{
+    __asm volatile(".equ SRAM_END, (0x20000000 + ( 96 * 1024 ))");
+    __asm volatile(".equ PSP_START, (SRAM_END-512)");
+    __asm volatile("LDR R0, =PSP_START");
+    __asm volatile("MSR PSP, R0");
+    __asm volatile("MOV R0,#0x02");
+    __asm volatile("MSR CONTROL,R0");
+    __asm volatile("BX LR");
+}
+
 int fun_add(int a, int b , int c , int d)
 {
     return (a+b+c+d);
 }
 
+void generate_excpetion(void)
+{
+    __asm volatile("SVC #0x2");
+}
 /* USER CODE END 0 */
 
 /**
@@ -71,7 +92,6 @@ int main(void)
 {
 
   /* USER CODE BEGIN 1 */
-  int ret = 0;
 
   /* USER CODE END 1 */
 
@@ -100,12 +120,15 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-  printf("Hello World!\n");
+  change_sp_to_psp();
+  int ret = 0;
+  //printf("Hello World!\n");
 
   ret = fun_add(1, 4, 5, 6);
 
   printf("result = %d\n",ret);
 
+  generate_excpetion();
   for (;;)
   {
     /* USER CODE END WHILE */
