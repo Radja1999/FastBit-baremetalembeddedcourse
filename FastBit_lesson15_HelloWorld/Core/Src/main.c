@@ -23,7 +23,9 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include "stdint.h"
 #include "stdio.h"
+#include "string.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -33,7 +35,7 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-
+#define USART1_IRQNO    37
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -66,6 +68,8 @@ int main(void)
 {
 
   /* USER CODE BEGIN 1 */
+    uint32_t *pISPR1 = (uint32_t*)0xE000E204;
+    uint32_t *pISER1 = (uint32_t*)0xE000E104;
 
   /* USER CODE END 1 */
 
@@ -89,16 +93,31 @@ int main(void)
   MX_GPIO_Init();
   MX_USART2_UART_Init();
   /* USER CODE BEGIN 2 */
+  /*
+  char msg[] = "Hello from STM32!\r\n";
+
+  HAL_UART_Transmit(&huart2,
+                    (uint8_t *)msg,
+                    strlen(msg),
+                    HAL_MAX_DELAY);*/
+
+  printf("Hello from STM32!\r\n");
 
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-  printf("Hello World!\n");
+
+  //1) Manual pend the pending bit for the USART2 IRQ number in NVIC
+  *pISPR1 |= (1 << (USART1_IRQNO % 32) );
+
+  //2) Enable the USART2 IRQ number in NVIC
+  *pISER1 |= (1 << (USART1_IRQNO % 32) );
+
   while (1)
   {
     /* USER CODE END WHILE */
-
+      printf("In while loop!\r\n");
     /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */
@@ -151,7 +170,21 @@ void SystemClock_Config(void)
 }
 
 /* USER CODE BEGIN 4 */
+int _write(int file, char *ptr, int len)
+{
+    HAL_UART_Transmit(&huart2,
+                      (uint8_t *)ptr,
+                      len,
+                      HAL_MAX_DELAY);
 
+    return len;
+}
+
+void USART1_IRQHandler(void)
+
+{
+    printf("in USART1 isr\n");
+}
 /* USER CODE END 4 */
 
 /**
