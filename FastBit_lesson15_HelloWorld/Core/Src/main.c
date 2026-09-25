@@ -23,6 +23,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include <stdbool.h>
 #include "stdint.h"
 #include "stdio.h"
 #include "string.h"
@@ -35,6 +36,8 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
+#define IRQNO_TIMER2    28
+#define IRQNO_I2C1      31
 #define USART1_IRQNO    37
 /* USER CODE END PD */
 
@@ -46,13 +49,16 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
-
+    /* NVIC register addresses. Refer to the processor generic guide */
+    uint32_t *pNVIC_IPRBase =  (uint32_t*)0xE000E400;
+    uint32_t *pNVIC_ISERBase = (uint32_t*)0xE000E100;
+    uint32_t *pNVIC_ISPRBase = (uint32_t*)0XE000E200;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 /* USER CODE BEGIN PFP */
-
+void configure_priority_for_irqs(uint8_t irq_no, uint8_t priority_value);
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -68,8 +74,6 @@ int main(void)
 {
 
   /* USER CODE BEGIN 1 */
-    uint32_t *pISPR1 = (uint32_t*)0xE000E204;
-    uint32_t *pISER1 = (uint32_t*)0xE000E104;
 
   /* USER CODE END 1 */
 
@@ -107,18 +111,37 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-
+//  uint32_t *pISPR1 = (uint32_t*)0xE000E204;
+//  uint32_t *pISER1 = (uint32_t*)0xE000E104;
   //1) Manual pend the pending bit for the USART2 IRQ number in NVIC
-  *pISPR1 |= (1 << (USART1_IRQNO % 32) );
+//  *pISPR1 |= (1 << (USART1_IRQNO % 32) );
 
   //2) Enable the USART2 IRQ number in NVIC
-  *pISER1 |= (1 << (USART1_IRQNO % 32) );
+//  *pISER1 |= (1 << (USART1_IRQNO % 32) );
 
   while (1)
   {
     /* USER CODE END WHILE */
-      printf("In while loop!\r\n");
     /* USER CODE BEGIN 3 */
+    static bool flag = false;
+    if (false == flag)
+    {
+        flag = true;
+        printf("Enter in while loop!\r\n");
+
+        //1. Lets configure the priority for the peripherals
+        configure_priority_for_irqs(IRQNO_TIMER2, 0x80);
+        configure_priority_for_irqs(IRQNO_I2C1, 0x70);
+
+        //2. Set the interrupt pending bit in the NVIC PR
+        *pNVIC_ISPRBase |= ( 1 << IRQNO_TIMER2);
+
+        //3. Enable the IRQs in NVIC ISER
+        *pNVIC_ISERBase |= ( 1 << IRQNO_I2C1);
+        *pNVIC_ISERBase |= ( 1 << IRQNO_TIMER2);
+
+        printf("End while loop!\r\n");
+    }
   }
   /* USER CODE END 3 */
 }
@@ -170,6 +193,33 @@ void SystemClock_Config(void)
 }
 
 /* USER CODE BEGIN 4 */
+void configure_priority_for_irqs(uint8_t irq_no, uint8_t priority_value)
+{
+    // 1. find out iprx
+    uint8_t iprx = irq_no / 4;
+    uint32_t *ipr = pNVIC_IPRBase + iprx;
+
+    // 2. position in iprx
+    uint8_t pos = (irq_no % 4) * 8;
+
+    // 3. configure the priority
+    *ipr &= ~(0xFF << pos); //clear
+    *ipr |= (priority_value << pos);
+}
+
+void TIM2_IRQHandler(void)
+{
+    printf("[TIM2_IRQHandler]\n");
+    *pNVIC_ISPRBase |= ( 1 << IRQNO_I2C1);
+    printf("[TIM2_IRQHandler 2]\n");
+//    while(1);
+}
+
+void I2C1_EV_IRQHandler(void)
+{
+    printf("[I2C1_EV_IRQHandler]\n");
+}
+
 int _write(int file, char *ptr, int len)
 {
     HAL_UART_Transmit(&huart2,

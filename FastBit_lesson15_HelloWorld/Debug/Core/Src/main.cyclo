@@ -1,5 +1,8 @@
-../Core/Src/main.c:67:5:main	1
-../Core/Src/main.c:130:6:SystemClock_Config	3
-../Core/Src/main.c:173:5:_write	1
-../Core/Src/main.c:183:6:USART1_IRQHandler	1
-../Core/Src/main.c:194:6:Error_Handler	1
+../Core/Src/main.c:73:5:main	2
+../Core/Src/main.c:153:6:SystemClock_Config	3
+../Core/Src/main.c:196:6:configure_priority_for_irqs	1
+../Core/Src/main.c:210:6:TIM2_IRQHandler	1
+../Core/Src/main.c:218:6:I2C1_EV_IRQHandler	1
+../Core/Src/main.c:223:5:_write	1
+../Core/Src/main.c:233:6:USART1_IRQHandler	1
+../Core/Src/main.c:244:6:Error_Handler	1
