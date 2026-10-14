@@ -57,6 +57,7 @@ void printToTeraTerm(char* buf, uint8_t len);
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
 
+
 void printToTeraTerm(char* buf, uint8_t len)
 {
     if (len >= 0U)
@@ -102,6 +103,7 @@ int main(void)
   /* USER CODE BEGIN 2 */
 
   /* USER CODE END 2 */
+    __asm("SVC #8");
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
