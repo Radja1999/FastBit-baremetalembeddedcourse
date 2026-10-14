@@ -77,12 +77,6 @@ int main(void)
 {
 
   /* USER CODE BEGIN 1 */
-    int control_reg = 0x2;
-    uint32_t psp_value = 0x20008000;
-
-    /* this code modifies the CONTROL register for SP selection */
-    __asm volatile ("msr PSP,%0"::"r"(psp_value));
-    __asm volatile ("msr CONTROL,%0"::"r"(control_reg));
 
   /* USER CODE END 1 */
 
