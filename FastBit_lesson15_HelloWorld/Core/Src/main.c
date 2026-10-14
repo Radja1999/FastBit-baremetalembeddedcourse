@@ -49,7 +49,6 @@
 
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
-void generate_interrupt(void);
 void printToTeraTerm(char* buf, uint8_t len);
 /* USER CODE BEGIN PFP */
 
@@ -57,18 +56,6 @@ void printToTeraTerm(char* buf, uint8_t len);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-void generate_interrupt()
-{
-    uint32_t *pSTIR  = (uint32_t*)0xE000EF00;
-    uint32_t *pISER0 = (uint32_t*)0xE000E100;
-
-    //enable IRQ3 interrupt
-    *pISER0 |= ( 1 << 3);
-
-    //generate an interrupt from software for IRQ3
-    *pSTIR = (3 & 0x1FF);
-
-}
 
 void printToTeraTerm(char* buf, uint8_t len)
 {
@@ -124,9 +111,8 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-  printf("Before interrupt\n");
-  generate_interrupt();
-  printf("After interrupt\n");
+  printf("START\n");
+
   while (1)
   {
     /* USER CODE END WHILE */
