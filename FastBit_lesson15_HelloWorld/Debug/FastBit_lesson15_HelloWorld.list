@@ -27,25 +27,25 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   ALLOC
  11 .ARM.attributes 0000002a  00000000  00000000  00004068  2**0
                   CONTENTS, READONLY
- 12 .debug_info   0000772b  00000000  00000000  00004092  2**0
+ 12 .debug_info   00007e86  00000000  00000000  00004092  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 13 .debug_abbrev 00001748  00000000  00000000  0000b7bd  2**0
+ 13 .debug_abbrev 00001830  00000000  00000000  0000bf18  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 14 .debug_aranges 00000738  00000000  00000000  0000cf08  2**3
+ 14 .debug_aranges 00000740  00000000  00000000  0000d748  2**3
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 15 .debug_rnglists 0000056a  00000000  00000000  0000d640  2**0
+ 15 .debug_rnglists 00000570  00000000  00000000  0000de88  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 16 .debug_macro  00016577  00000000  00000000  0000dbaa  2**0
+ 16 .debug_macro  00016738  00000000  00000000  0000e3f8  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 17 .debug_line   00009ded  00000000  00000000  00024121  2**0
+ 17 .debug_line   0000a1f3  00000000  00000000  00024b30  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 18 .debug_str    00086dc2  00000000  00000000  0002df0e  2**0
+ 18 .debug_str    00086e1c  00000000  00000000  0002ed23  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 19 .comment      00000043  00000000  00000000  000b4cd0  2**0
+ 19 .comment      00000043  00000000  00000000  000b5b3f  2**0
                   CONTENTS, READONLY
- 20 .debug_frame  00002074  00000000  00000000  000b4d14  2**2
+ 20 .debug_frame  00002098  00000000  00000000  000b5b84  2**2
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 21 .debug_line_str 0000008a  00000000  00000000  000b6d88  2**0
+ 21 .debug_line_str 0000008a  00000000  00000000  000b7c1c  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
 
 Disassembly of section .text:
@@ -1001,56 +1001,55 @@ void SysTick_Handler(void)
  80007f6:	bd80      	pop	{r7, pc}
 
 080007f8 <ITM_SendChar>:
-/* ITM register addresses */
-#define ITM_STIMULUS_PORT0      *((volatile uint32_t*) 0xE0000000 )
-#define ITM_TRACE_EN            *((volatile uint32_t*) 0xE0000E00 )
-
-void ITM_SendChar(uint8_t ch)
+           \li Is blocking when a debugger is connected, but the previous character sent has not been transmitted.
+  \param [in]     ch  Character to transmit.
+  \returns            Character to transmit.
+ */
+__STATIC_INLINE uint32_t ITM_SendChar (uint32_t ch)
 {
  80007f8:	b480      	push	{r7}
  80007fa:	b083      	sub	sp, #12
  80007fc:	af00      	add	r7, sp, #0
- 80007fe:	4603      	mov	r3, r0
- 8000800:	71fb      	strb	r3, [r7, #7]
-
-    //Enable TRCENA
-    DEMCR |= ( 1 << 24);
- 8000802:	4b0e      	ldr	r3, [pc, #56]	@ (800083c <ITM_SendChar+0x44>)
- 8000804:	681b      	ldr	r3, [r3, #0]
- 8000806:	4a0d      	ldr	r2, [pc, #52]	@ (800083c <ITM_SendChar+0x44>)
- 8000808:	f043 7380 	orr.w	r3, r3, #16777216	@ 0x1000000
- 800080c:	6013      	str	r3, [r2, #0]
-
-    //enable stimulus port 0
-    ITM_TRACE_EN |= ( 1 << 0);
- 800080e:	4b0c      	ldr	r3, [pc, #48]	@ (8000840 <ITM_SendChar+0x48>)
- 8000810:	681b      	ldr	r3, [r3, #0]
- 8000812:	4a0b      	ldr	r2, [pc, #44]	@ (8000840 <ITM_SendChar+0x48>)
- 8000814:	f043 0301 	orr.w	r3, r3, #1
- 8000818:	6013      	str	r3, [r2, #0]
-
-    // read FIFO status in bit [0]:
-    while(!(ITM_STIMULUS_PORT0 & 1));
- 800081a:	bf00      	nop
- 800081c:	f04f 4360 	mov.w	r3, #3758096384	@ 0xe0000000
- 8000820:	681b      	ldr	r3, [r3, #0]
- 8000822:	f003 0301 	and.w	r3, r3, #1
- 8000826:	2b00      	cmp	r3, #0
- 8000828:	d0f8      	beq.n	800081c <ITM_SendChar+0x24>
-
-    //Write to ITM stimulus port0
-    ITM_STIMULUS_PORT0 = ch;
- 800082a:	f04f 4260 	mov.w	r2, #3758096384	@ 0xe0000000
- 800082e:	79fb      	ldrb	r3, [r7, #7]
- 8000830:	6013      	str	r3, [r2, #0]
+ 80007fe:	6078      	str	r0, [r7, #4]
+  if (((ITM->TCR & ITM_TCR_ITMENA_Msk) != 0UL) &&      /* ITM enabled */
+ 8000800:	f04f 4360 	mov.w	r3, #3758096384	@ 0xe0000000
+ 8000804:	f8d3 3e80 	ldr.w	r3, [r3, #3712]	@ 0xe80
+ 8000808:	f003 0301 	and.w	r3, r3, #1
+ 800080c:	2b00      	cmp	r3, #0
+ 800080e:	d013      	beq.n	8000838 <ITM_SendChar+0x40>
+      ((ITM->TER & 1UL               ) != 0UL)   )     /* ITM Port #0 enabled */
+ 8000810:	f04f 4360 	mov.w	r3, #3758096384	@ 0xe0000000
+ 8000814:	f8d3 3e00 	ldr.w	r3, [r3, #3584]	@ 0xe00
+ 8000818:	f003 0301 	and.w	r3, r3, #1
+  if (((ITM->TCR & ITM_TCR_ITMENA_Msk) != 0UL) &&      /* ITM enabled */
+ 800081c:	2b00      	cmp	r3, #0
+ 800081e:	d00b      	beq.n	8000838 <ITM_SendChar+0x40>
+  {
+    while (ITM->PORT[0U].u32 == 0UL)
+ 8000820:	e000      	b.n	8000824 <ITM_SendChar+0x2c>
+    {
+      __NOP();
+ 8000822:	bf00      	nop
+    while (ITM->PORT[0U].u32 == 0UL)
+ 8000824:	f04f 4360 	mov.w	r3, #3758096384	@ 0xe0000000
+ 8000828:	681b      	ldr	r3, [r3, #0]
+ 800082a:	2b00      	cmp	r3, #0
+ 800082c:	d0f9      	beq.n	8000822 <ITM_SendChar+0x2a>
+    }
+    ITM->PORT[0U].u8 = (uint8_t)ch;
+ 800082e:	f04f 4360 	mov.w	r3, #3758096384	@ 0xe0000000
+ 8000832:	687a      	ldr	r2, [r7, #4]
+ 8000834:	b2d2      	uxtb	r2, r2
+ 8000836:	701a      	strb	r2, [r3, #0]
+  }
+  return (ch);
+ 8000838:	687b      	ldr	r3, [r7, #4]
 }
- 8000832:	bf00      	nop
- 8000834:	370c      	adds	r7, #12
- 8000836:	46bd      	mov	sp, r7
- 8000838:	bc80      	pop	{r7}
- 800083a:	4770      	bx	lr
- 800083c:	e000edfc 	.word	0xe000edfc
- 8000840:	e0000e00 	.word	0xe0000e00
+ 800083a:	4618      	mov	r0, r3
+ 800083c:	370c      	adds	r7, #12
+ 800083e:	46bd      	mov	sp, r7
+ 8000840:	bc80      	pop	{r7}
+ 8000842:	4770      	bx	lr
 
 08000844 <_read>:
   _kill(status, -1);
@@ -1117,7 +1116,9 @@ __attribute__((weak)) int _write(int file, char *ptr, int len)
  800088c:	617b      	str	r3, [r7, #20]
  800088e:	e009      	b.n	80008a4 <_write+0x26>
   {
-    /*__io_putchar(*ptr++);*/
+#if PRINTF_TO_TERATERM == 1
+    __io_putchar(*ptr++);
+#else
       ITM_SendChar(*ptr++);
  8000890:	68bb      	ldr	r3, [r7, #8]
  8000892:	1c5a      	adds	r2, r3, #1
@@ -1133,6 +1134,7 @@ __attribute__((weak)) int _write(int file, char *ptr, int len)
  80008a6:	687b      	ldr	r3, [r7, #4]
  80008a8:	429a      	cmp	r2, r3
  80008aa:	dbf1      	blt.n	8000890 <_write+0x12>
+#endif
   }
   return len;
  80008ac:	687b      	ldr	r3, [r7, #4]
@@ -1761,22 +1763,15 @@ __weak uint32_t HAL_GetTick(void)
  8000ba0:	200000d0 	.word	0x200000d0
 
 08000ba4 <__NVIC_SetPriorityGrouping>:
-           In case of a conflict between priority grouping and available
-           priority bits (__NVIC_PRIO_BITS), the smallest possible priority group is set.
-  \param [in]      PriorityGroup  Priority grouping field.
- */
-__STATIC_INLINE void __NVIC_SetPriorityGrouping(uint32_t PriorityGroup)
 {
  8000ba4:	b480      	push	{r7}
  8000ba6:	b085      	sub	sp, #20
  8000ba8:	af00      	add	r7, sp, #0
  8000baa:	6078      	str	r0, [r7, #4]
-  uint32_t reg_value;
   uint32_t PriorityGroupTmp = (PriorityGroup & (uint32_t)0x07UL);             /* only values 0..7 are used          */
  8000bac:	687b      	ldr	r3, [r7, #4]
  8000bae:	f003 0307 	and.w	r3, r3, #7
  8000bb2:	60fb      	str	r3, [r7, #12]
-
   reg_value  =  SCB->AIRCR;                                                   /* read old register configuration    */
  8000bb4:	4b0c      	ldr	r3, [pc, #48]	@ (8000be8 <__NVIC_SetPriorityGrouping+0x44>)
  8000bb6:	68db      	ldr	r3, [r3, #12]
@@ -1786,8 +1781,6 @@ __STATIC_INLINE void __NVIC_SetPriorityGrouping(uint32_t PriorityGroup)
  8000bbc:	f64f 03ff 	movw	r3, #63743	@ 0xf8ff
  8000bc0:	4013      	ands	r3, r2
  8000bc2:	60bb      	str	r3, [r7, #8]
-  reg_value  =  (reg_value                                   |
-                ((uint32_t)0x5FAUL << SCB_AIRCR_VECTKEY_Pos) |
                 (PriorityGroupTmp << SCB_AIRCR_PRIGROUP_Pos)  );              /* Insert write key and priority group */
  8000bc4:	68fb      	ldr	r3, [r7, #12]
  8000bc6:	021a      	lsls	r2, r3, #8
@@ -1812,11 +1805,6 @@ __STATIC_INLINE void __NVIC_SetPriorityGrouping(uint32_t PriorityGroup)
  8000be8:	e000ed00 	.word	0xe000ed00
 
 08000bec <__NVIC_GetPriorityGrouping>:
-  \brief   Get Priority Grouping
-  \details Reads the priority grouping field from the NVIC Interrupt Controller.
-  \return                Priority grouping field (SCB->AIRCR [10:8] PRIGROUP field).
- */
-__STATIC_INLINE uint32_t __NVIC_GetPriorityGrouping(void)
 {
  8000bec:	b480      	push	{r7}
  8000bee:	af00      	add	r7, sp, #0
@@ -1834,11 +1822,6 @@ __STATIC_INLINE uint32_t __NVIC_GetPriorityGrouping(void)
  8000c04:	e000ed00 	.word	0xe000ed00
 
 08000c08 <__NVIC_SetPriority>:
-  \param [in]      IRQn  Interrupt number.
-  \param [in]  priority  Priority to set.
-  \note    The priority cannot be set for every processor exception.
- */
-__STATIC_INLINE void __NVIC_SetPriority(IRQn_Type IRQn, uint32_t priority)
 {
  8000c08:	b480      	push	{r7}
  8000c0a:	b083      	sub	sp, #12
@@ -1850,7 +1833,6 @@ __STATIC_INLINE void __NVIC_SetPriority(IRQn_Type IRQn, uint32_t priority)
  8000c14:	f997 3007 	ldrsb.w	r3, [r7, #7]
  8000c18:	2b00      	cmp	r3, #0
  8000c1a:	db0a      	blt.n	8000c32 <__NVIC_SetPriority+0x2a>
-  {
     NVIC->IP[((uint32_t)IRQn)]               = (uint8_t)((priority << (8U - __NVIC_PRIO_BITS)) & (uint32_t)0xFFUL);
  8000c1c:	683b      	ldr	r3, [r7, #0]
  8000c1e:	b2da      	uxtb	r2, r3
@@ -1860,11 +1842,6 @@ __STATIC_INLINE void __NVIC_SetPriority(IRQn_Type IRQn, uint32_t priority)
  8000c28:	b2d2      	uxtb	r2, r2
  8000c2a:	440b      	add	r3, r1
  8000c2c:	f883 2300 	strb.w	r2, [r3, #768]	@ 0x300
-  }
-  else
-  {
-    SCB->SHP[(((uint32_t)IRQn) & 0xFUL)-4UL] = (uint8_t)((priority << (8U - __NVIC_PRIO_BITS)) & (uint32_t)0xFFUL);
-  }
 }
  8000c30:	e00a      	b.n	8000c48 <__NVIC_SetPriority+0x40>
     SCB->SHP[(((uint32_t)IRQn) & 0xFUL)-4UL] = (uint8_t)((priority << (8U - __NVIC_PRIO_BITS)) & (uint32_t)0xFFUL);
@@ -1889,11 +1866,6 @@ __STATIC_INLINE void __NVIC_SetPriority(IRQn_Type IRQn, uint32_t priority)
  8000c58:	e000ed00 	.word	0xe000ed00
 
 08000c5c <NVIC_EncodePriority>:
-  \param [in]   PreemptPriority  Preemptive priority value (starting from 0).
-  \param [in]       SubPriority  Subpriority value (starting from 0).
-  \return                        Encoded priority. Value can be used in the function \ref NVIC_SetPriority().
- */
-__STATIC_INLINE uint32_t NVIC_EncodePriority (uint32_t PriorityGroup, uint32_t PreemptPriority, uint32_t SubPriority)
 {
  8000c5c:	b480      	push	{r7}
  8000c5e:	b089      	sub	sp, #36	@ 0x24
@@ -1905,9 +1877,6 @@ __STATIC_INLINE uint32_t NVIC_EncodePriority (uint32_t PriorityGroup, uint32_t P
  8000c68:	68fb      	ldr	r3, [r7, #12]
  8000c6a:	f003 0307 	and.w	r3, r3, #7
  8000c6e:	61fb      	str	r3, [r7, #28]
-  uint32_t PreemptPriorityBits;
-  uint32_t SubPriorityBits;
-
   PreemptPriorityBits = ((7UL - PriorityGroupTmp) > (uint32_t)(__NVIC_PRIO_BITS)) ? (uint32_t)(__NVIC_PRIO_BITS) : (uint32_t)(7UL - PriorityGroupTmp);
  8000c70:	69fb      	ldr	r3, [r7, #28]
  8000c72:	f1c3 0307 	rsb	r3, r3, #7
@@ -1925,8 +1894,6 @@ __STATIC_INLINE uint32_t NVIC_EncodePriority (uint32_t PriorityGroup, uint32_t P
  8000c8a:	e000      	b.n	8000c8e <NVIC_EncodePriority+0x32>
  8000c8c:	2300      	movs	r3, #0
  8000c8e:	617b      	str	r3, [r7, #20]
-
-  return (
            ((PreemptPriority & (uint32_t)((1UL << (PreemptPriorityBits)) - 1UL)) << SubPriorityBits) |
  8000c90:	f04f 32ff 	mov.w	r2, #4294967295
  8000c94:	69bb      	ldr	r3, [r7, #24]
@@ -1945,7 +1912,6 @@ __STATIC_INLINE uint32_t NVIC_EncodePriority (uint32_t PriorityGroup, uint32_t P
  8000cb2:	400b      	ands	r3, r1
            ((PreemptPriority & (uint32_t)((1UL << (PreemptPriorityBits)) - 1UL)) << SubPriorityBits) |
  8000cb4:	4313      	orrs	r3, r2
-         );
 }
  8000cb6:	4618      	mov	r0, r3
  8000cb8:	3724      	adds	r7, #36	@ 0x24
@@ -1954,11 +1920,6 @@ __STATIC_INLINE uint32_t NVIC_EncodePriority (uint32_t PriorityGroup, uint32_t P
  8000cbe:	4770      	bx	lr
 
 08000cc0 <SysTick_Config>:
-  \note    When the variable <b>__Vendor_SysTickConfig</b> is set to 1, then the
-           function <b>SysTick_Config</b> is not included. In this case, the file <b><i>device</i>.h</b>
-           must contain a vendor-specific implementation of this function.
- */
-__STATIC_INLINE uint32_t SysTick_Config(uint32_t ticks)
 {
  8000cc0:	b580      	push	{r7, lr}
  8000cc2:	b082      	sub	sp, #8
@@ -1969,12 +1930,9 @@ __STATIC_INLINE uint32_t SysTick_Config(uint32_t ticks)
  8000cca:	3b01      	subs	r3, #1
  8000ccc:	f1b3 7f80 	cmp.w	r3, #16777216	@ 0x1000000
  8000cd0:	d301      	bcc.n	8000cd6 <SysTick_Config+0x16>
-  {
     return (1UL);                                                   /* Reload value impossible */
  8000cd2:	2301      	movs	r3, #1
  8000cd4:	e00f      	b.n	8000cf6 <SysTick_Config+0x36>
-  }
-
   SysTick->LOAD  = (uint32_t)(ticks - 1UL);                         /* set reload register */
  8000cd6:	4a0a      	ldr	r2, [pc, #40]	@ (8000d00 <SysTick_Config+0x40>)
  8000cd8:	687b      	ldr	r3, [r7, #4]
@@ -1992,8 +1950,6 @@ __STATIC_INLINE uint32_t SysTick_Config(uint32_t ticks)
  8000cee:	4b04      	ldr	r3, [pc, #16]	@ (8000d00 <SysTick_Config+0x40>)
  8000cf0:	2207      	movs	r2, #7
  8000cf2:	601a      	str	r2, [r3, #0]
-                   SysTick_CTRL_TICKINT_Msk   |
-                   SysTick_CTRL_ENABLE_Msk;                         /* Enable SysTick IRQ and SysTick Timer */
   return (0UL);                                                     /* Function successful */
  8000cf4:	2300      	movs	r3, #0
 }

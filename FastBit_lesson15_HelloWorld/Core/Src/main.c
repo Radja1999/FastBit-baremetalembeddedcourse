@@ -50,6 +50,7 @@
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 void generate_interrupt(void);
+void printToTeraTerm(char* buf, uint8_t len);
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
@@ -67,6 +68,17 @@ void generate_interrupt()
     //generate an interrupt from software for IRQ3
     *pSTIR = (3 & 0x1FF);
 
+}
+
+void printToTeraTerm(char* buf, uint8_t len)
+{
+    if (len >= 0U)
+    {
+        HAL_UART_Transmit(&huart2,
+                      (uint8_t *)buf,
+                      len,
+                      1000U);
+    }
 }
 /* USER CODE END 0 */
 

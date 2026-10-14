@@ -29,6 +29,7 @@
 #include <time.h>
 #include <sys/time.h>
 #include <sys/times.h>
+#include "usart.h"
 
 /* USER CODE BEGIN ITM_SendChar */
 
@@ -38,8 +39,10 @@
 /* ITM register addresses */
 #define ITM_STIMULUS_PORT0      *((volatile uint32_t*) 0xE0000000 )
 #define ITM_TRACE_EN            *((volatile uint32_t*) 0xE0000E00 )
+/*
+void ITM_SendChar(char ch);
 
-void ITM_SendChar(uint8_t ch)
+void ITM_SendChar(char ch)
 {
 
     //Enable TRCENA
@@ -54,11 +57,10 @@ void ITM_SendChar(uint8_t ch)
     //Write to ITM stimulus port0
     ITM_STIMULUS_PORT0 = ch;
 }
-
+*/
 /* USER CODE END ITM_SendChar */
 
 /* Variables */
-extern int __io_putchar(int ch) __attribute__((weak));
 extern int __io_getchar(void) __attribute__((weak));
 
 
@@ -110,8 +112,11 @@ __attribute__((weak)) int _write(int file, char *ptr, int len)
 
   for (DataIdx = 0; DataIdx < len; DataIdx++)
   {
-    /*__io_putchar(*ptr++);*/
+#if PRINTF_TO_TERATERM == 1
+    __io_putchar(*ptr++);
+#else
       ITM_SendChar(*ptr++);
+#endif
   }
   return len;
 }
