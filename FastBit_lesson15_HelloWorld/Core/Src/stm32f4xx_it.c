@@ -142,10 +142,26 @@ void UsageFault_Handler(void)
 /**
   * @brief This function handles System service call via SWI instruction.
   */
-void SVC_Handler(void)
+__attribute__ ((naked)) void SVC_Handler(void)
+{
+  /* USER CODE BEGIN SVCall_IRQn 0 */
+    __asm("MRS R0,MSP");
+    __asm("B SVC_Handler_c");
+  /* USER CODE END SVCall_IRQn 0 */
+  /* USER CODE BEGIN SVCall_IRQn 1 */
+
+  /* USER CODE END SVCall_IRQn 1 */
+}
+
+void SVC_Handler_c(uint32_t *pBaseOfStackFrame)
 {
   /* USER CODE BEGIN SVCall_IRQn 0 */
     printf("in SVC handler\n");
+    uint8_t *pReturn_addr = (uint8_t*)pBaseOfStackFrame[6];
+    pReturn_addr -= 2;
+    uint8_t svc_number = *pReturn_addr;
+    printf("Svc number is: %d\n", svc_number);
+
   /* USER CODE END SVCall_IRQn 0 */
   /* USER CODE BEGIN SVCall_IRQn 1 */
 
