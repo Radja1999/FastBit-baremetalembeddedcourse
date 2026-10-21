@@ -4,7 +4,7 @@
 ../Core/Src/stm32f4xx_it.c:115:6:BusFault_Handler	1
 ../Core/Src/stm32f4xx_it.c:130:6:UsageFault_Handler	1
 ../Core/Src/stm32f4xx_it.c:145:30:SVC_Handler	1
-../Core/Src/stm32f4xx_it.c:156:6:SVC_Handler_c	1
-../Core/Src/stm32f4xx_it.c:175:6:DebugMon_Handler	1
-../Core/Src/stm32f4xx_it.c:188:6:PendSV_Handler	1
-../Core/Src/stm32f4xx_it.c:201:6:SysTick_Handler	1
+../Core/Src/stm32f4xx_it.c:156:6:SVC_Handler_c	3
+../Core/Src/stm32f4xx_it.c:194:6:DebugMon_Handler	1
+../Core/Src/stm32f4xx_it.c:207:6:PendSV_Handler	1
+../Core/Src/stm32f4xx_it.c:220:6:SysTick_Handler	1

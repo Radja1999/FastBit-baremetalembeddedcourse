@@ -103,9 +103,14 @@ int main(void)
   /* USER CODE BEGIN 2 */
 
   /* USER CODE END 2 */
-    __asm("SVC #8");
+  uint32_t first = 1U;
+  uint32_t second = 2U;
+  uint32_t data;
+
+  __asm volatile ("MOV R0,%0"::"r"(first):"r0");
+  __asm volatile ("MOV R1,%0"::"r"(second):"r1");
+    __asm volatile ("SVC #36");
   //register uint32_t data __asm("r0");
-    uint32_t data;
   __asm volatile ("MOV %0,R0": "=r"(data) ::);
   printf(" data = %ld\n", data);
 

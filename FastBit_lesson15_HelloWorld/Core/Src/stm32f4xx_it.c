@@ -156,12 +156,31 @@ __attribute__ ((naked)) void SVC_Handler(void)
 void SVC_Handler_c(uint32_t *pBaseOfStackFrame)
 {
   /* USER CODE BEGIN SVCall_IRQn 0 */
+    uint32_t res;
     printf("in SVC handler\n");
     uint8_t *pReturn_addr = (uint8_t*)pBaseOfStackFrame[6];
     pReturn_addr -= 2;
     uint8_t svc_number = *pReturn_addr;
     printf("Svc number is: %d\n", svc_number);
-    pBaseOfStackFrame[0] = svc_number+1U;
+
+    uint32_t arg0 = pBaseOfStackFrame[0];
+    uint32_t arg1 = pBaseOfStackFrame[1];
+
+    switch (svc_number)
+    {
+        case 36:
+            res = arg0 + arg1;
+            break;
+        case 37:
+            res = arg0 - arg1;
+            break;
+        default:
+            printf("Invalid SVC number!\n");
+            res = 0;
+            break;
+    }
+
+    pBaseOfStackFrame[0] = res;
 
   /* USER CODE END SVCall_IRQn 0 */
   /* USER CODE BEGIN SVCall_IRQn 1 */
