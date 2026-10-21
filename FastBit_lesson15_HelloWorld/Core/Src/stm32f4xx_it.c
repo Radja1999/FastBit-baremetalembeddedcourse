@@ -161,6 +161,7 @@ void SVC_Handler_c(uint32_t *pBaseOfStackFrame)
     pReturn_addr -= 2;
     uint8_t svc_number = *pReturn_addr;
     printf("Svc number is: %d\n", svc_number);
+    pBaseOfStackFrame[0] = svc_number+1U;
 
   /* USER CODE END SVCall_IRQn 0 */
   /* USER CODE BEGIN SVCall_IRQn 1 */

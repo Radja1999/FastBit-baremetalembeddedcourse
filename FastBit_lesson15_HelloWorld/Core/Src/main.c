@@ -104,6 +104,10 @@ int main(void)
 
   /* USER CODE END 2 */
     __asm("SVC #8");
+  //register uint32_t data __asm("r0");
+    uint32_t data;
+  __asm volatile ("MOV %0,R0": "=r"(data) ::);
+  printf(" data = %ld\n", data);
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
