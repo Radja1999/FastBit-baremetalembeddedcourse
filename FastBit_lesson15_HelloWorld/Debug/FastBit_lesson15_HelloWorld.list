@@ -7,45 +7,45 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, ALLOC, LOAD, READONLY, DATA
   1 .text         000026b0  08000194  08000194  00001194  2**2
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
-  2 .rodata       00000028  08002844  08002844  00003844  2**2
+  2 .rodata       00000068  08002844  08002844  00003844  2**2
                   CONTENTS, ALLOC, LOAD, READONLY, DATA
-  3 .ARM.extab    00000000  0800286c  0800286c  00004068  2**0
+  3 .ARM.extab    00000000  080028ac  080028ac  00004068  2**0
                   CONTENTS, READONLY
-  4 .ARM          00000008  0800286c  0800286c  0000386c  2**2
+  4 .ARM          00000008  080028ac  080028ac  000038ac  2**2
                   CONTENTS, ALLOC, LOAD, READONLY, DATA
-  5 .preinit_array 00000000  08002874  08002874  00004068  2**0
+  5 .preinit_array 00000000  080028b4  080028b4  00004068  2**0
                   CONTENTS, ALLOC, LOAD, DATA
-  6 .init_array   00000004  08002874  08002874  00003874  2**2
+  6 .init_array   00000004  080028b4  080028b4  000038b4  2**2
                   CONTENTS, ALLOC, LOAD, READONLY, DATA
-  7 .fini_array   00000004  08002878  08002878  00003878  2**2
+  7 .fini_array   00000004  080028b8  080028b8  000038b8  2**2
                   CONTENTS, ALLOC, LOAD, READONLY, DATA
-  8 .data         00000068  20000000  0800287c  00004000  2**2
+  8 .data         00000068  20000000  080028bc  00004000  2**2
                   CONTENTS, ALLOC, LOAD, DATA
-  9 .bss          000001b8  20000068  080028e4  00004068  2**2
+  9 .bss          000001b8  20000068  08002924  00004068  2**2
                   ALLOC
- 10 ._user_heap_stack 00000600  20000220  080028e4  00004220  2**0
+ 10 ._user_heap_stack 00000600  20000220  08002924  00004220  2**0
                   ALLOC
  11 .ARM.attributes 0000002a  00000000  00000000  00004068  2**0
                   CONTENTS, READONLY
- 12 .debug_info   000076c4  00000000  00000000  00004092  2**0
+ 12 .debug_info   00007704  00000000  00000000  00004092  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 13 .debug_abbrev 0000172b  00000000  00000000  0000b756  2**0
+ 13 .debug_abbrev 00001746  00000000  00000000  0000b796  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 14 .debug_aranges 00000728  00000000  00000000  0000ce88  2**3
+ 14 .debug_aranges 00000748  00000000  00000000  0000cee0  2**3
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 15 .debug_rnglists 0000055e  00000000  00000000  0000d5b0  2**0
+ 15 .debug_rnglists 00000576  00000000  00000000  0000d628  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 16 .debug_macro  00016577  00000000  00000000  0000db0e  2**0
+ 16 .debug_macro  000165b3  00000000  00000000  0000db9e  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 17 .debug_line   00009da1  00000000  00000000  00024085  2**0
+ 17 .debug_line   00009e05  00000000  00000000  00024151  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 18 .debug_str    00086d7d  00000000  00000000  0002de26  2**0
+ 18 .debug_str    00086f27  00000000  00000000  0002df56  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 19 .comment      00000043  00000000  00000000  000b4ba3  2**0
+ 19 .comment      00000043  00000000  00000000  000b4e7d  2**0
                   CONTENTS, READONLY
- 20 .debug_frame  00002030  00000000  00000000  000b4be8  2**2
+ 20 .debug_frame  000020a0  00000000  00000000  000b4ec0  2**2
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 21 .debug_line_str 0000008a  00000000  00000000  000b6c18  2**0
+ 21 .debug_line_str 0000008a  00000000  00000000  000b6f60  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
 
 Disassembly of section .text:
@@ -1475,7 +1475,7 @@ LoopFillZerobss:
   ldr r1, =_edata
  8000a2c:	20000068 	.word	0x20000068
   ldr r2, =_sidata
- 8000a30:	0800287c 	.word	0x0800287c
+ 8000a30:	080028bc 	.word	0x080028bc
   ldr r2, =_sbss
  8000a34:	20000068 	.word	0x20000068
   ldr r4, =_ebss
@@ -3743,7 +3743,7 @@ HAL_StatusTypeDef HAL_RCC_ClockConfig(const RCC_ClkInitTypeDef  *RCC_ClkInitStru
  80016be:	bf00      	nop
  80016c0:	40023c00 	.word	0x40023c00
  80016c4:	40023800 	.word	0x40023800
- 80016c8:	08002854 	.word	0x08002854
+ 80016c8:	08002894 	.word	0x08002894
  80016cc:	20000000 	.word	0x20000000
  80016d0:	20000004 	.word	0x20000004
 
@@ -4052,7 +4052,7 @@ uint32_t HAL_RCC_GetPCLK1Freq(void)
  800191c:	4618      	mov	r0, r3
  800191e:	bd80      	pop	{r7, pc}
  8001920:	40023800 	.word	0x40023800
- 8001924:	08002864 	.word	0x08002864
+ 8001924:	080028a4 	.word	0x080028a4
 
 08001928 <HAL_RCC_GetPCLK2Freq>:
   * @note   Each time PCLK2 changes, this function must be called to update the
@@ -4078,7 +4078,7 @@ uint32_t HAL_RCC_GetPCLK2Freq(void)
  8001944:	4618      	mov	r0, r3
  8001946:	bd80      	pop	{r7, pc}
  8001948:	40023800 	.word	0x40023800
- 800194c:	08002864 	.word	0x08002864
+ 800194c:	080028a4 	.word	0x080028a4
 
 08001950 <HAL_UART_Init>:
   * @param  huart  Pointer to a UART_HandleTypeDef structure that contains
@@ -5268,10 +5268,10 @@ static void UART_SetConfig(UART_HandleTypeDef *huart)
  80023b2:	4798      	blx	r3
  80023b4:	3601      	adds	r6, #1
  80023b6:	e7f2      	b.n	800239e <__libc_init_array+0x1e>
- 80023b8:	08002874 	.word	0x08002874
- 80023bc:	08002874 	.word	0x08002874
- 80023c0:	08002874 	.word	0x08002874
- 80023c4:	08002878 	.word	0x08002878
+ 80023b8:	080028b4 	.word	0x080028b4
+ 80023bc:	080028b4 	.word	0x080028b4
+ 80023c0:	080028b4 	.word	0x080028b4
+ 80023c4:	080028b8 	.word	0x080028b8
 
 080023c8 <__retarget_lock_init_recursive>:
  80023c8:	4770      	bx	lr

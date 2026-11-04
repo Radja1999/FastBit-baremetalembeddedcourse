@@ -33,6 +33,19 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
+/* Some stack memory calculation */
+#define SIZE_TASK_STACK     1024
+#define SIZE_SCHED_STACK    1024
+
+#define SRAM_START          0x20000000U
+#define SIZE_RAM            ( (128)* (1024))
+#define SRAM_END            (SRAM_START) + (SIZE_RAM)
+
+#define T1_STACK_START      SRAM_END
+#define T2_STACK_START      ( (SRAM_END) - (1 * SIZE_TASK_STACK) )
+#define T3_STACK_START      ( (SRAM_END) - (2 * SIZE_TASK_STACK) )
+#define T4_STACK_START      ( (SRAM_END) - (3 * SIZE_TASK_STACK) )
+#define SCHED_STACK_START   ( (SRAM_END) - (4 * SIZE_TASK_STACK) )
 
 /* USER CODE END PD */
 
@@ -50,12 +63,14 @@
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 /* USER CODE BEGIN PFP */
-
+void task1_handler(void);   //This is task 1
+void task2_handler(void);   //This is task 2
+void task3_handler(void);   //This is task 3
+void task4_handler(void);   //This is task 4
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-
 /* USER CODE END 0 */
 
 /**
@@ -146,7 +161,37 @@ void SystemClock_Config(void)
 }
 
 /* USER CODE BEGIN 4 */
+void task1_handler(void)
+{
+    while(1)
+    {
+        printf("This is task 1\n");
+    }
+}
 
+void task2_handler(void)
+{
+    while(1)
+    {
+        printf("This is task 2\n");
+    }
+}
+
+void task3_handler(void)
+{
+    while(1)
+    {
+        printf("This is task 3\n");
+    }
+}
+
+void task4_handler(void)
+{
+    while(1)
+    {
+        printf("This is task 4\n");
+    }
+}
 /* USER CODE END 4 */
 
 /**
