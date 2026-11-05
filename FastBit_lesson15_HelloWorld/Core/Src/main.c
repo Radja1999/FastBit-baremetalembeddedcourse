@@ -104,6 +104,8 @@ int main(void)
   SystemClock_Config();
 
   /* USER CODE BEGIN SysInit */
+  void init_scheduler_stack(uint32_t sched_top_of_stack);
+  init_scheduler_stack(SCHED_STACK_START);
   init_systick_timer(TICK_HZ);
   /* USER CODE END SysInit */
 
@@ -217,6 +219,12 @@ void init_systick_timer(uint32_t tick_hz)
     *pSCSR |= (1<<2);   //Indicates the clock source, processor clock source
     //enable the systick
     *pSCSR |= (1<<0);   //enable the counter
+}
+
+__attribute__((naked)) void init_scheduler_stack(uint32_t sched_top_of_stack)
+{
+    __asm volatile("MSR MSP,%0": : "r" (sched_top_of_stack) : );
+    __asm volatile("BX LR");
 }
 
 void SysTick_Handler(void)
