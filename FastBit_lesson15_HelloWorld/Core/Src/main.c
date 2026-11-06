@@ -33,25 +33,6 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-/* Some stack memory calculation */
-#define SIZE_TASK_STACK     1024
-#define SIZE_SCHED_STACK    1024
-
-#define SRAM_START          0x20000000U
-#define SIZE_RAM            ( (128)* (1024))
-#define SRAM_END            (SRAM_START) + (SIZE_RAM)
-
-#define T1_STACK_START      SRAM_END
-#define T2_STACK_START      ( (SRAM_END) - (1 * SIZE_TASK_STACK) )
-#define T3_STACK_START      ( (SRAM_END) - (2 * SIZE_TASK_STACK) )
-#define T4_STACK_START      ( (SRAM_END) - (3 * SIZE_TASK_STACK) )
-#define SCHED_STACK_START   ( (SRAM_END) - (4 * SIZE_TASK_STACK) )
-
-#define TICK_HZ             1000U
-
-#define HSI_CLOCK           16000000U
-#define SYSTICK_TIM_CLK     HSI_CLOCK
-
 
 /* USER CODE END PD */
 
@@ -63,12 +44,15 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
-
+uint32_t psp_of_tasks[MAX_TASKS]={T1_STACK_START, T2_STACK_START, T3_STACK_START, T4_STACK_START};
+uint32_t task_handlers[MAX_TASKS];
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 /* USER CODE BEGIN PFP */
+void init_scheduler_stack(uint32_t sched_top_of_stack);
+void init_task_stack(void);
 void init_systick_timer(uint32_t tick_hz);
 void task1_handler(void);   //This is task 1
 void task2_handler(void);   //This is task 2
@@ -104,8 +88,12 @@ int main(void)
   SystemClock_Config();
 
   /* USER CODE BEGIN SysInit */
-  void init_scheduler_stack(uint32_t sched_top_of_stack);
   init_scheduler_stack(SCHED_STACK_START);
+  task_handlers[0] = (uint32_t)task1_handler;
+  task_handlers[1] = (uint32_t)task2_handler;
+  task_handlers[2] = (uint32_t)task3_handler;
+  task_handlers[3] = (uint32_t)task4_handler;
+  init_task_stack();
   init_systick_timer(TICK_HZ);
   /* USER CODE END SysInit */
 
@@ -225,6 +213,29 @@ __attribute__((naked)) void init_scheduler_stack(uint32_t sched_top_of_stack)
 {
     __asm volatile("MSR MSP,%0": : "r" (sched_top_of_stack) : );
     __asm volatile("BX LR");
+}
+
+void init_task_stack(void)
+{
+    uint32_t *pPSP;
+
+    for (int i = 0; i< MAX_TASKS; i++)
+    {
+        pPSP = (uint32_t*)psp_of_tasks[i];
+        pPSP--;
+        *pPSP = DUMMY_XPSR; //0x0010000
+        pPSP--; //PC
+        *pPSP = task_handlers[i];
+        pPSP--; //LR
+        *pPSP = 0xFFFFFFFD;
+        for (int j = 0; j < 13; j++)
+        {
+            pPSP--; //PC
+            *pPSP = 0x00000000;
+        }
+
+        psp_of_tasks[i] = (uint32_t)pPSP;
+    }
 }
 
 void SysTick_Handler(void)
